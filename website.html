@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>RakShak 3D Gen | AI Defense Intelligence System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #00ff41; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #33ff66; }
+
+        /* Glow Effects */
+        .glow-text { text-shadow: 0 0 10px rgba(0, 255, 65, 0.5); }
+        .glow-border { box-shadow: 0 0 20px rgba(0, 255, 65, 0.3); }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            color: #00ff41;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { filter: drop-shadow(0 0 2px #00ff41); }
+            50% { filter: drop-shadow(0 0 15px #00ff41); }
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff41, #33ff66, #88ff88);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-sub {
+            font-size: 10px;
+            color: #88ff88;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+        }
+
+        .nav-links a {
+            color: #ccc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #00ff41;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00ff41;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after, .nav-links a.active::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 20% 30%, #0a2e0a, #000000);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(45deg, rgba(0,255,65,0.02) 0px, rgba(0,255,65,0.02) 2px, transparent 2px, transparent 8px);
+            animation: moveGrid 20s linear infinite;
+        }
+
+        @keyframes moveGrid {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(0, 255, 65, 0.2);
+            border: 1px solid #00ff41;
+            padding: 8px 25px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #00ff41;
+            margin-bottom: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #00ff41);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .ack-button {
+            background: linear-gradient(135deg, #00aa33, #00ff41);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #000;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .ack-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+        }
+
+        /* Main Content Sections */
+        .section {
+            padding: 80px 0;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+        }
+
+        .section-dark {
+            background: #050505;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: #00ff41;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        /* Interactive Cards */
+        .interactive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .info-card {
+            background: rgba(0, 20, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .info-card:hover {
+            border-color: #00ff41;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+        }
+
+        .info-icon {
+            font-size: 40px;
+            color: #00ff41;
+            margin-bottom: 20px;
+        }
+
+        .info-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .info-card p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .click-hint {
+            margin-top: 15px;
+            font-size: 0.75rem;
+            color: #00ff41;
+            opacity: 0.7;
+        }
+
+        /* Dual System Display */
+        .dual-system {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .system-card {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 30px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 65, 0.4);
+            transition: all 0.3s;
+        }
+
+        .system-card:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+        }
+
+        .system-header {
+            background: linear-gradient(135deg, #0a2e0a, #051005);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+        }
+
+        .system-header h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            color: #00ff41;
+        }
+
+        .system-header p {
+            font-size: 0.85rem;
+            color: #88ff88;
+            margin-top: 5px;
+        }
+
+        .system-body {
+            padding: 25px;
+        }
+
+        /* Mobile App Mockup */
+        .mobile-mockup {
+            background: #111;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .mobile-screen {
+            background: #1a1a1a;
+            border-radius: 30px;
+            overflow: hidden;
+        }
+
+        .mobile-status {
+            background: #0a0a0a;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .alert-card {
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 3px solid #00ff41;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+        }
+
+        .alert-card.warning {
+            border-left-color: #ffaa33;
+            background: rgba(255, 170, 51, 0.1);
+        }
+
+        .alert-card.danger {
+            border-left-color: #ff3333;
+            background: rgba(255, 51, 51, 0.1);
+        }
+
+        .safe-zone {
+            background: rgba(0, 255, 65, 0.05);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 1000px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            background: #0a0a0a;
+            border: 2px solid #00ff41;
+            border-radius: 30px;
+            padding: 30px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #00ff41;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 32px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #ff3333;
+            transform: scale(1.1);
+        }
+
+        .modal-section {
+            margin: 25px 0;
+            padding: 15px;
+            background: rgba(0, 30, 0, 0.3);
+            border-radius: 15px;
+            border-left: 3px solid #00ff41;
+        }
+
+        .modal-section h3 {
+            color: #00ff41;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .modal-section h4 {
+            color: #88ff88;
+            margin: 10px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .data-table th, .data-table td {
+            padding: 10px;
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            text-align: left;
+        }
+
+        .data-table th {
+            background: rgba(0, 255, 65, 0.1);
+            color: #00ff41;
+        }
+
+        .stat-badge {
+            display: inline-block;
+            background: #00ff41;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #000;
+            padding: 50px 0 30px;
+            border-top: 1px solid rgba(0, 255, 65, 0.3);
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .dual-system { grid-template-columns: 1fr; }
+            .hero-title { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .section-title { font-size: 1.8rem; }
+            .modal-header h2 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-container">
+        <div class="logo">
+            <i class="fas fa-shield-alt logo-icon"></i>
+            <div>
+                <div class="logo-text">RAKSHAK 3D GEN</div>
+                <div class="logo-sub">AI DEFENSE INTELLIGENCE</div>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a class="nav-tab" data-tab="home">Home</a>
+            <a class="nav-tab" data-tab="system">System</a>
+            <a class="nav-tab" data-tab="mobile">Mobile App</a>
+            <a class="nav-tab" data-tab="tech">Technology</a>
+        </div>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero" id="home-section">
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fas fa-microchip"></i> AI-POWERED | MULTI-DOMAIN
+        </div>
+        <h1 class="hero-title">RakShak 3D Gen</h1>
+        <div class="hero-subtitle">
+            India's First AI-Driven Multi-Domain Threat Surveillance System<br>
+            Real-time Threat Detection | ML + CNN Fusion | 3D Geospatial Intelligence
+        </div>
+        <button class="ack-button" id="acknowledgeBtn">
+            <i class="fas fa-fingerprint"></i> ACKNOWLEDGE & EXPLORE
+        </button>
+    </div>
+</section>
+
+<!-- Main Content -->
+<main id="main-content">
+    <!-- System Architecture Section -->
+    <section class="section" id="system-section">
+        <div class="container">
+            <h2 class="section-title">⚡ System Architecture</h2>
+            <div class="interactive-grid">
+                <div class="info-card" data-modal="ml-details">
+                    <i class="fas fa-tree info-icon"></i>
+                    <h3>Random Forest ML</h3>
+                    <p>100 decision trees, 34 features, threat probability estimation</p>
+                    <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</div>
+                </div>
+                <div class="info-card" data-modal="cnn-details">
+                    <i class="fas fa-eye info-icon"></i>
+                    <h3>CNN Visual Recognition</h3>
+                    <p>3 convolutional blocks detecting drones, tanks, ships, wildlife</p>
+                    <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</div>
+                </div>
+                <div class="info-card" data-modal="fusion-details">
+                    <i class="fas fa-charging-station info-icon"></i>
+                    <h3>Fusion Engine</h3>
+                    <p>Weighted fusion with 12.4% accuracy improvement</p>
+                    <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</div>
+                </div>
+                <div class="info-card" data-modal="features-details">
+                    <i class="fas fa-chart-line info-icon"></i>
+                    <h3>34 Engineered Features</h3>
+                    <p>Kinematic, Behavioral, Environmental & Signature analysis</p>
+                    <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</div>
+                </div>
+                <div class="info-card" data-modal="dataset-details">
+                    <i class="fas fa-database info-icon"></i>
+                    <h3>Dataset & Training</h3>
+                    <p>525 entries, multi-domain distribution, stratified split</p>
+                    <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</div>
+                </div>
+                <div class="info-card" data-modal="performance-details">
+                    <i class="fas fa-chart-bar info-icon"></i>
+                    <h3>Performance Metrics</h3>
+                    <p>Accuracy, Precision, Recall, F1-Score, AUC-ROC</p>
+                    <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dual System: Defense Command & Mobile App -->
+    <section class="section section-dark" id="dual-section">
+        <div class="container">
+            <h2 class="section-title">🎯 Command Center & Civilian Protection</h2>
+            <div class="dual-system">
+                <!-- Defense Command System -->
+                <div class="system-card">
+                    <div class="system-header">
+                        <i class="fas fa-tv" style="font-size: 28px; color: #00ff41;"></i>
+                        <h2>DEFENSE COMMAND CENTER</h2>
+                        <p>Military Operations | Real-Time Threat Intelligence</p>
+                    </div>
+                    <div class="system-body">
+                        <div class="info-card" data-modal="command-details" style="cursor: pointer; margin-bottom: 20px;">
+                            <i class="fas fa-shield-alt"></i> Click for Command Center Details
+                        </div>
+                        <div style="margin-top: 15px; background: #0f0f0f; border-radius: 15px; padding: 15px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                                <div><span style="color: #00ff41;">● ACTIVE</span> Air: 3 | Land: 2 | Water: 1</div>
+                                <div><i class="fas fa-chart-line" style="color: #00ff41;"></i> Threat Level: <span style="color: #ffaa33;">MEDIUM</span></div>
+                            </div>
+                            <div class="alert-card danger">
+                                <i class="fas fa-skull-crosswalk"></i> <strong>High Threat:</strong> Unidentified Aerial Object | Confidence 89%
+                            </div>
+                            <div class="alert-card">
+                                <i class="fas fa-info-circle"></i> <strong>ML Prediction:</strong> Random Forest → High Threat | CNN → Missile Class
+                            </div>
+                            <div class="alert-card warning">
+                                <i class="fas fa-dove"></i> <strong>Prudent Downgrade:</strong> ML High + CNN Bird → Final Medium Threat
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Civilian Mobile Application -->
+                <div class="system-card">
+                    <div class="system-header">
+                        <i class="fas fa-mobile-alt" style="font-size: 28px; color: #00ff41;"></i>
+                        <h2>RAKSHAK CITIZEN APP</h2>
+                        <p>Border Area Alert System | For Civilians</p>
+                    </div>
+                    <div class="system-body">
+                        <div class="info-card" data-modal="mobile-details" style="cursor: pointer; margin-bottom: 20px;">
+                            <i class="fas fa-phone-alt"></i> Click for Mobile App Details
+                        </div>
+                        <div class="mobile-mockup">
+                            <div class="mobile-screen">
+                                <div class="mobile-status">
+                                    <i class="fas fa-shield-alt"></i> RAKSHAK ALERT | <span id="liveTime">12:00:00</span>
+                                    <i class="fas fa-signal" style="margin-left: 10px;"></i>
+                                </div>
+                                <div style="padding: 15px;">
+                                    <div style="background: #2a2a2a; border-radius: 15px; padding: 12px; margin-bottom: 15px;">
+                                        <i class="fas fa-map-marker-alt" style="color: #00ff41;"></i> <strong>Your Location:</strong> Border District, Sector 7
+                                        <div style="height: 4px; background: #333; margin: 10px 0; border-radius: 2px;">
+                                            <div style="width: 85%; height: 100%; background: #00ff41; border-radius: 2px;"></div>
+                                        </div>
+                                        <span>Safety Index: <span style="color: #00ff41;">85%</span></span>
+                                    </div>
+                                    <div class="alert-card">
+                                        <i class="fas fa-bell"></i> <strong>SAFE ZONE</strong><br>
+                                        No active threats in your area. Stay vigilant.
+                                    </div>
+                                    <div class="safe-zone">
+                                        <i class="fas fa-people-arrows" style="font-size: 24px; color: #00ff41;"></i>
+                                        <p style="margin-top: 8px;"><strong>Evacuation Routes Available</strong><br>Nearest Shelter: 2.3 km | ETA: 5 min</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack Section -->
+    <section class="section" id="tech-section">
+        <div class="container">
+            <h2 class="section-title">🚀 Core Technologies</h2>
+            <div class="interactive-grid">
+                <div class="info-card" data-modal="tsds-details">
+                    <i class="fas fa-microchip info-icon"></i>
+                    <h3>TSDS Edge Hardware</h3>
+                    <p>ARM Cortex-A72 + NPU | <5W power | 96h autonomy</p>
+                    <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</div>
+                </div>
+                <div class="info-card" data-modal="domain-details">
+                    <i class="fas fa-globe-asia info-icon"></i>
+                    <h3>Multi-Domain Processing</h3>
+                    <p>Air, Land, Water with domain-specific mitigation</p>
+                    <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</div>
+                </div>
+                <div class="info-card" data-modal="future-details">
+                    <i class="fas fa-rocket info-icon"></i>
+                    <h3>Future Enhancements</h3>
+                    <p>RL, Transformers, Federated Learning, Drone Swarms</p>
+                    <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</div>
+                </div>
+                <div class="info-card" data-modal="ethics-details">
+                    <i class="fas fa-balance-scale info-icon"></i>
+                    <h3>Ethical AI Framework</h3>
+                    <p>Human-in-loop, Transparency, Accountability</p>
+                    <div class="click-hint"><i class="fas fa-mouse-pointer"></i> Click for details</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p><i class="fas fa-shield-alt"></i> RakShak 3D Gen Model | AI-Powered Multi-Domain Threat Surveillance</p>
+        <p style="margin-top: 15px; font-size: 12px;">Developed by: Jayita Saikia, Nainsy Sharma, Sambhavi Tiwari, Devesh Kumar, Vaidika Thakur | VIT Bhopal University</p>
+        <p style="margin-top: 10px; font-size: 11px;">© 2025 | Made in India for National Security</p>
+    </div>
+</footer>
+
+<!-- Modal Container -->
+<div id="modalContainer"></div>
+
+<script>
+    // Modal content definitions for each tab
+    const modalContents = {
+        'ml-details': {
+            title: '🤖 Random Forest Machine Learning Classifier',
+            sections: [
+                { heading: 'Algorithm Overview', content: 'Random Forest is an ensemble learning method that constructs multiple decision trees during training and outputs the class that is the mode of the classes (classification) of individual trees. For RakShak, we implemented 100 decision trees with a maximum depth of 15.' },
+                { heading: 'Model Configuration', content: '• Number of Trees: 100<br>• Max Depth: 15<br>• Criterion: Gini Impurity<br>• Min Samples Split: 5<br>• Bootstrap: True' },
+                { heading: 'Performance Metrics', content: '<table class="data-table"><tr><th>Metric</th><th>Value</th></tr><tr><td>Accuracy</td><td class="stat-badge">34.29%</td></tr><tr><td>Precision</td><td>0.315</td></tr><tr><td>Recall</td><td>0.324</td></tr><tr><td>F1-Score</td><td>0.320</td></tr><tr><td>AUC-ROC</td><td>0.534</td></tr></table>' },
+                { heading: 'Feature Importance', content: 'Top contributing features: Doppler Stability (0.142), Thermal Contrast (0.128), Velocity Deviation (0.095), Terrain Difficulty (0.082), Propulsive Intensity (0.071).' },
+                { heading: 'Mathematical Formulation', content: 'P<sub>ML</sub>(T = c | X) = (1/T) Σ p<sub>t</sub>(c | X)<br>I<sub>f</sub> = (1/T) Σ Σ Δi(n) · 𝟙(f splits at n)' }
+            ]
+        },
+        'cnn-details': {
+            title: '👁️ Convolutional Neural Network - Visual Recognition',
+            sections: [
+                { heading: 'Architecture Overview', content: 'Custom CNN with 3 convolutional blocks designed for real-time object detection in military surveillance scenarios.' },
+                { heading: 'Network Architecture', content: '<table class="data-table"><tr><th>Layer</th><th>Details</th></tr><tr><td>Conv Block 1</td><td>32 filters, 3x3 kernel, ReLU, BatchNorm, MaxPool</td></tr><tr><td>Conv Block 2</td><td>64 filters, 3x3 kernel, ReLU, BatchNorm, MaxPool</td></tr><tr><td>Conv Block 3</td><td>128 filters, 3x3 kernel, ReLU, BatchNorm, MaxPool</td></tr><tr><td>FC Layer 1</td><td>256 units, Dropout (0.5)</td></tr><tr><td>Output</td><td>Softmax, 5 classes</td></tr></table>' },
+                { heading: 'Object Classification Performance', content: '<table class="data-table"><tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th></tr><tr><td>Military Air</td><td>0.82</td><td>0.78</td><td>0.80</td></tr><tr><td>Military Land</td><td>0.79</td><td>0.74</td><td>0.76</td></tr><tr><td>Military Water</td><td>0.85</td><td>0.81</td><td>0.83</td></tr><tr><td>Wildlife</td><td>0.91</td><td>0.88</td><td>0.89</td></tr><tr><td>Civilian</td><td>0.76</td><td>0.82</td><td>0.79</td></tr></table>' },
+                { heading: 'Training Details', content: '• Dataset: 525 synthetic images per class<br>• Optimizer: Adam (lr=0.001)<br>• Loss: Categorical Cross-Entropy<br>• Epochs: 50<br>• Batch Size: 32' }
+            ]
+        },
+        'fusion-details': {
+            title: '⚡ ML + CNN Fusion Engine',
+            sections: [
+                { heading: 'Fusion Methodology', content: 'The fusion engine combines outputs from Random Forest and CNN using a weighted scoring mechanism that prioritizes sensor reliability while incorporating visual confirmation.' },
+                { heading: 'Fusion Formula', content: 'S = α · P<sub>ML</sub>(T = c | X) + β · ψ(P<sub>CNN</sub>(O = k | I))<br><br>where α = 0.7, β = 0.3, and ψ maps object classes to threat contributions.' },
+                { heading: 'Performance Gains', content: '<table class="data-table"><tr><th>Metric</th><th>Improvement</th></tr><tr><td>Overall Accuracy</td><td class="stat-badge">+12.4%</td></tr><tr><td>False Positive Reduction</td><td class="stat-badge">28.6%</td></tr><tr><td>False Negative Reduction</td><td class="stat-badge">15.3%</td></tr></table>' },
+                { heading: 'Decision Thresholds', content: 'Final Threat = High if S ≥ τ<sub>high</sub><br>Medium if τ<sub>med</sub> ≤ S < τ<sub>high</sub><br>Low if S < τ<sub>med</sub><br><br>Optimized thresholds: τ<sub>high</sub> = 0.7, τ<sub>med</sub> = 0.4' },
+                { heading: 'Case Studies', content: '• ML High + CNN Missile → Final High (Confidence: 0.89)<br>• ML High + CNN Bird → Final Medium (Prudent Downgrade)<br>• ML Medium + CNN Armed Vessel → Final High (Contextual Upgrade)' }
+            ]
+        },
+        'features-details': {
+            title: '📊 34 Engineered Features',
+            sections: [
+                { heading: 'Feature Categories', content: 'The feature engineering pipeline transforms raw sensor data into 34 discriminative features across four categories.' },
+                { heading: 'Kinematic Features', content: '• Velocity (km/h, m/s, knots)<br>• Acceleration<br>• Jerk<br>• Trajectory Curvature<br>• Motion Consistency Index' },
+                { heading: 'Behavioral Features', content: '• Route Deviation Score<br>• Pattern-of-Life Anomaly<br>• Loitering Detection<br>• Movement Predictability' },
+                { heading: 'Environmental Features', content: '• Terrain Difficulty Index (1-5)<br>• Wave Resistance Factor (1-7)<br>• Wind Load Impact<br>• Atmospheric Attenuation' },
+                { heading: 'Signature Features', content: '• Thermal Contrast Ratio<br>• Doppler Stability Index<br>• Radar Cross-Section Variability<br>• Acoustic Signature Profile' }
+            ]
+        },
+        'dataset-details': {
+            title: '📁 Dataset & Training Methodology',
+            sections: [
+                { heading: 'Dataset Overview', content: 'Total Entries: 525 | Features: 34 | Classes: High, Medium, Low' },
+                { heading: 'Domain Distribution', content: '<table class="data-table"><tr><th>Domain</th><th>High</th><th>Medium</th><th>Low</th><th>Total</th></tr><tr><td>Air</td><td>68</td><td>45</td><td>42</td><td>155</td></tr><tr><td>Land</td><td>52</td><td>48</td><td>45</td><td>145</td></tr><tr><td>Water</td><td>60</td><td>42</td><td>53</td><td>155</td></tr><tr><td>Other</td><td>25</td><td>25</td><td>20</td><td>70</td></tr><tr><td><strong>Total</strong></td><td><strong>205</strong></td><td><strong>160</strong></td><td><strong>160</strong></td><td><strong>525</strong></td></tr></table>' },
+                { heading: 'Data Generation', content: '• Air Domain: Radar returns with atmospheric attenuation, Doppler effects<br>• Land Domain: Terrain interaction, thermal masking, motion signatures<br>• Water Domain: Sonar propagation, wave artifacts, acoustic variations' },
+                { heading: 'Preprocessing', content: '• Z-score normalization<br>• One-hot encoding<br>• Stratified train-test split (80/20)<br>• 5-fold cross-validation' }
+            ]
+        },
+        'performance-details': {
+            title: '📈 Comprehensive Performance Metrics',
+            sections: [
+                { heading: 'ML Model Comparison', content: '<table class="data-table"> <tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th></tr> <tr><td>Decision Tree</td><td>31.43%</td><td>0.298</td><td>0.285</td><td>0.292</td></tr> <tr><td><strong>Random Forest</strong></td><td><strong>34.29%</strong></td><td><strong>0.315</strong></td><td><strong>0.324</strong></td><td><strong>0.320</strong></td></tr> <tr><td>KNN (k=7)</td><td>29.52%</td><td>0.286</td><td>0.302</td><td>0.295</td></tr> </table>' },
+                { heading: 'CNN Per-Class Performance', content: 'Military Air: F1=0.80 | Military Land: F1=0.76 | Military Water: F1=0.83 | Wildlife: F1=0.89' },
+                { heading: 'Fusion System Gains', content: '• 12.4% Overall Accuracy Improvement<br>• 28.6% False Positive Reduction<br>• 15.3% False Negative Reduction' },
+                { heading: 'ROC Analysis', content: 'Random Forest AUC-ROC: 0.534<br>Fusion System AUC-ROC: 0.612 (+14.6%)' }
+            ]
+        },
+        'command-details': {
+            title: '🎖️ Defense Command Center',
+            sections: [
+                { heading: 'Real-Time Monitoring', content: 'The Command Center provides military operators with real-time threat intelligence, 3D geospatial visualization, and automated alert systems.' },
+                { heading: 'Dashboard Features', content: '• 3D trajectory tracking<br>• Threat heatmaps<br>• Domain-specific filters<br>• Historical pattern analysis<br>• Automated threat certificates' },
+                { heading: 'Alert Protocol', content: 'Threat Level High: Red Alert with immediate command notification<br>Threat Level Medium: Yellow Alert with recommended action<br>Threat Level Low: Blue Alert with continued monitoring' },
+                { heading: 'Integration Capabilities', content: '• Secure military network integration<br>• Multi-unit coordination<br>• Satellite uplink support<br>• Encrypted communication channels' }
+            ]
+        },
+        'mobile-details': {
+            title: '📱 RakShak Citizen Mobile Application',
+            sections: [
+                { heading: 'Purpose', content: 'A simple, accessible mobile application for civilians living in border areas to receive real-time safety alerts and evacuation guidance.' },
+                { heading: 'Key Features', content: '• Location-based safety alerts<br>• Evacuation route mapping<br>• Safe zone indicators<br>• One-tap emergency contact<br>• Offline alert storage' },
+                { heading: 'Alert Types', content: '• Green: Safe Zone - No active threats<br>• Yellow: Caution - Suspicious activity reported<br>• Red: Danger - Evacuation advised' },
+                { heading: 'How It Works', content: 'The app receives anonymized threat data from the Defense Command Center, processes it with location context, and delivers personalized safety recommendations to users.' },
+                { heading: 'Privacy & Security', content: '• No personal data collection<br>• End-to-end encrypted alerts<br>• Anonymous location sharing only during emergencies<br>• Open-source verification' }
+            ]
+        },
+        'tsds-details': {
+            title: '🖥️ TSDS - Tactical Security Detection System',
+            sections: [
+                { heading: 'Hardware Specifications', content: '• Processor: ARM Cortex-A72 Quad-Core<br>• NPU: Neural Processing Unit for CNN acceleration<br>• RAM: 8GB LPDDR4<br>• Storage: 64GB eMMC + MicroSD slot<br>• Power: <5W average consumption' },
+                { heading: 'Environmental Ratings', content: '• IP67 Water & Dust Resistance<br>• Operating Temp: -20°C to 55°C<br>• Humidity: 0-95% non-condensing<br>• Solar-rechargeable battery: 96-hour autonomy' },
+                { heading: 'Connectivity', content: '• Secure Mesh Networking<br>• LTE/5G Backhaul<br>• Wi-Fi 6<br>• Bluetooth 5.2<br>• MIPI-CSI Camera Interface' },
+                { heading: 'Inference Performance', content: '• ML Inference: 47ms<br>• CNN Inference: 124ms<br>• Combined Processing: <200ms<br>• Detection Range: 5km (Radar), 2km (Optical), 1km (Thermal)' }
+            ]
+        },
+        'domain-details': {
+            title: '🌍 Multi-Domain Processing & Mitigation',
+            sections: [
+                { heading: 'Air Domain Challenges', content: '• Fog & Cloud Cover → Radar Primary Reliance<br>• Wind Turbulence → Kalman Filtering<br>• Thermal Distortion → Multi-Spectral Fusion<br>• High-Speed Tracking → Optimized Streaming' },
+                { heading: 'Land Domain Challenges', content: '• Camouflage → Thermal Signature Analysis<br>• Dust Storms → Radar/Acoustic Integration<br>• Multipath Reflections → Spatial Filtering<br>• Urban Canyons → Distributed Sensor Network' },
+                { heading: 'Water Domain Challenges', content: '• Wave Interference → Wavelet Denoising<br>• Sonar Reverberation → Beamforming<br>• Temperature-Depth Anomalies → Environmental Modeling<br>• Subsurface Threats → Passive Acoustic Monitoring' }
+            ]
+        },
+        'future-details': {
+            title: '🚀 Future Enhancements Roadmap',
+            sections: [
+                { heading: 'Phase 1 (2025)', content: '• Real sensor integration (radar, AIS, UAV feeds)<br>• Field deployment testing<br>• Extended dataset collection' },
+                { heading: 'Phase 2 (2026)', content: '• Reinforcement Learning for predictive tracking<br>• Transformer-based multi-modal fusion<br>• Edge model optimization' },
+                { heading: 'Phase 3 (2027)', content: '• Federated Learning for distributed training<br>• Autonomous drone swarm integration<br>• Quantum-resistant encryption' },
+                { heading: 'Long-Term Vision', content: '• Cross-border threat intelligence sharing<br>• AI-powered autonomous response systems<br>• Integration with space-based surveillance' }
+            ]
+        },
+        'ethics-details': {
+            title: '⚖️ Ethical AI Framework',
+            sections: [
+                { heading: 'Core Principles', content: '• Human-in-the-Loop: Final engagement requires operator confirmation<br>• Transparency: Threat scores with contributing factors<br>• Accountability: Full audit trails maintained<br>• Fairness: Validated across diverse conditions' },
+                { heading: 'Risk Mitigation', content: '• False Positive Minimization<br>• Privacy Protection (no civilian monitoring)<br>• Adversarial Robustness testing<br>• Compliance with International Humanitarian Law' },
+                { heading: 'Governance', content: '• Independent ethics review board<br>• Regular bias and performance audits<br>• Transparent documentation<br>• International cooperation on AI defense standards' }
+            ]
+        }
+    };
+
+    // Function to open modal
+    function openModal(modalId) {
+        const content = modalContents[modalId];
+        if (!content) return;
+        
+        const modalContainer = document.getElementById('modalContainer');
+        let sectionsHtml = '';
+        content.sections.forEach(section => {
+            sectionsHtml += `
+                <div class="modal-section">
+                    <h3>${section.heading}</h3>
+                    <div>${section.content}</div>
+                </div>
+            `;
+        });
+        
+        const modalHtml = `
+            <div id="activeModal" class="modal" style="display: flex;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-info-circle"></i> ${content.title}</h2>
+                        <button class="close-modal" onclick="closeModal()">&times;</button>
+                    </div>
+                    ${sectionsHtml}
+                    <div style="margin-top: 20px; text-align: center; padding: 10px; background: rgba(0,255,65,0.1); border-radius: 10px;">
+                        <i class="fas fa-shield-alt"></i> RakShak 3D Gen - AI Defense Intelligence
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        modalContainer.innerHTML = modalHtml;
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal() {
+        const modal = document.getElementById('activeModal');
+        if (modal) {
+            modal.remove();
+            document.body.style.overflow = 'auto';
+        }
+    }
+    
+    // Add click listeners to all info cards
+    document.querySelectorAll('.info-card').forEach(card => {
+        const modalId = card.getAttribute('data-modal');
+        if (modalId) {
+            card.addEventListener('click', () => openModal(modalId));
+        }
+    });
+    
+    // Acknowledge button modal
+    const ackBtn = document.getElementById('acknowledgeBtn');
+    ackBtn.addEventListener('click', () => {
+        openModal('ml-details');
+    });
+    
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+    
+    // Close modal on outside click
+    document.addEventListener('click', (e) => {
+        const modal = document.getElementById('activeModal');
+        if (modal && e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    // Live time update
+    function updateTime() {
+        const now = new Date();
+        const timeElem = document.getElementById('liveTime');
+        if (timeElem) timeElem.innerText = now.toLocaleTimeString();
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+    
+    // Navigation tabs - smooth scroll
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            const target = tab.getAttribute('data-tab');
+            const sections = {
+                home: document.getElementById('home-section'),
+                system: document.getElementById('system-section'),
+                mobile: document.getElementById('dual-section'),
+                tech: document.getElementById('tech-section')
+            };
+            if (sections[target]) {
+                sections[target].scrollIntoView({ behavior: 'smooth' });
+            }
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>
